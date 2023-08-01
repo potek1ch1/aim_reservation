@@ -1,0 +1,56 @@
+@startuml
+
+title シーケンス図
+/' define participants '/
+actor 利用者
+actor 担当者
+boundary 機器貸出システム
+
+/' messages '/
+opt 予約をしていない時
+  利用者 -> 担当者: 予約手続き
+end
+利用者 -> 担当者: 学生証を渡す
+利用者 -> 機器貸出システム:　申請情報入力
+note right
+  学籍番号
+  機器特定情報
+end note
+機器貸出システム -> 担当者: 申請情報
+activate 機器貸出システム
+activate 担当者
+機器貸出システム -> 利用者: 申請情報の表示
+deactivate 機器貸出システム
+担当者 -> 担当者: 本人確認
+deactivate 担当者
+alt 初回貸出のとき
+  note left
+    学生証の学籍番号と入力された学籍番号を確認
+  end note
+  利用者 -> 機器貸出システム: 氏名・電話番号入力
+  activate 機器貸出システム
+  機器貸出システム -> 担当者: 氏名・電話番号
+  activate 担当者
+  機器貸出システム -> 利用者: 氏名・電話番号
+  deactivate 機器貸出システム
+  担当者 -> 担当者: 確認
+  note left
+    学籍番号の氏名と入力された氏名の確認
+  end note
+  担当者 -> 利用者: 電話番号の確認要求
+  deactivate 担当者
+else 2回目以降の時
+  機器貸出システム -> 担当者: 氏名・電話番号
+  activate 機器貸出システム
+  activate 担当者
+  機器貸出システム -> 利用者: 氏名・電話番号
+  deactivate 機器貸出システム
+  担当者 -> 利用者: 電話番号の確認要求
+  note right
+    電話番号が前回と変わっていないかを確認
+  end note
+end note
+担当者 -> 利用者: 学生証返却・機器貸出
+deactivate 担当者
+
+@enduml

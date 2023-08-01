@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- <scrip src="/app.js" defer></script> -->
+</head>
+
+<body>
+  {% raw %}
+  <div id="app">
+    <h1>貸出機器一覧</h1>
+    <!-- <table border="2" style="border-collapse: collapse">
+      <tr>
+        <th>機器id</th>
+        <th>名前</th>
+        <th>持ち出し</th>
+      </tr>
+      <tr v-for="catalog in catalogs">
+        <td>{{catalog.id}}</td>
+        <td>{{catalog.name}}</td>
+        <td v-if="catalog.availableOutside==1">可</td>
+        <td v-else>不可</td>
+      </tr>
+    </table> -->
+    <hr>
+    <div class="flex-container">
+      <div v-for="catalog in catalogs">
+        <div class="container">
+          <a :href="getUrl(catalog.id)">
+            <div class="img-field">
+              <!-- <img src="{{ url_for('static', filename='/images/seion.png')}}" width="200" height="300" alt="aaaa"> -->
+              <img :src="getSupplymentUrl(catalog.url)" width="200" height="300" alt="" loading="lazy">
+            </div>
+            <div class="name-field">{{catalog.name}}</div>
+
+            <div class="isAvailable" v-if="catalog.availableOutside==1">持ち出し可</div>
+            <div class="isAvailable" v-else>持ち出し不可</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endraw %}
+</body>
+
+<style>
+  .flex-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    border: 1px solid;
+    width: 300px;
+    height: 350px;
+    margin: 10px;
+  }
+
+  .img-field {
+    margin: auto;
+    border: 1px solid;
+    width: 200px;
+    height: 300px;
+  }
+
+  .name-field {
+    margin: auto;
+    width: 70%;
+    text-align: center;
+  }
+
+  .isAvailable {
+    margin: auto;
+    width: 70%;
+    text-align: center;
+  }
+</style>
+
+<script>
+  const {
+    createApp
+  } = Vue
+  createApp({
+    data() {
+      return {
+        catalogs: [],
+        baseUrl: "http://localhost:8080/supplyment/",
+        baseSupplymentUrl:"http://localhost:8080/static/images/"
+      }
+    },
+    created() {
+      axios.get('http://localhost:8080/supplyments').then(res => {
+        let arr = res.data.supplyments
+        this.catalogs = arr
+        //console.log(this.catalogs)
+      });
+    },
+    methods: {
+      getUrl(id) {
+        let = newUrl = this.baseUrl + id
+        console.log(newUrl)
+        return newUrl
+      },
+      getSupplymentUrl(url){
+        let newSupplymentUrl = this.baseSupplymentUrl + url
+        return newSupplymentUrl
+      }
+    }
+  }).mount('#app')
+</script>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js" defer></script>
+  <!-- <script src="./../node_modules/vue/dist/vue.cjs.js"></script> -->
+  <script src="/app.js" defer></script>
+  <title>TODOリスト</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>{{appName}}</h2>
+
+    <p v-if="done">完了リスト</p>
+    <p v-else>未了リスト</p>
+    <button @click="switchToDo()">切り替え</button>
+    <hr>
+      <table border="solid 0.5px">
+        <tr>
+          <th>内容</th>
+          <th>追加</th>
+        </tr>
+        <tr>
+          <th><input type="text" v-model="addingTitle"></th>
+          <th><button @click="addToDo">追加</button></th>
+        </tr>
+        </table>
+    <hr>
+    <div>
+      <table border="solid 0.5px">
+        <thead>
+          <tr>
+            <th>番号</th>
+            <th>タイトル</th>
+            <th>状態</th>
+            <th>変更</th>
+            <th>削除</th>
+            <th>編集</th>
+          </tr>
+        </thead>
+        <tr v-for="todo in getTodos">
+          <td>{{todo.id}}</td>
+          <td v-if="todo.done">完了</td>
+          <td v-else>未了</td>
+          <td v-if="todo.id==edit"><input type="text" v-model="todo.title"/></td>
+          <td v-else>{{todo.title}}</td>
+          <td><button v-on:click="changeToDo(todo.id)">変更</button></td>
+          <td><button @click="deleteToDo(todo.id)">削除</button></td>
+          <td v-if="todo.id==edit"><button @click="edit=0">確定</button></td>
+          <td v-else><button @click="editToDo(todo.id)">編集</button></td>
+        </tr>
+      </table>
+    </div>
+    <hr>
+  </div>
+</body>
+
+</html>

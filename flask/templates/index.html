@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>機器貸出予約</title>
+</head>
+
+<body>
+  <form action="" method="post" onsubmit="return validateForm()">
+    <label for="studentID">
+      学籍番号を入力してください:
+    </label>
+    <input type="text" id="studentID" name="studentID" placeholder="18120178"><br>
+    <button type="submit">次へ</button>
+  </form>
+</body>
+<script>
+  function validateForm() {
+    var studentID = document.getElementById("studentID").value;
+
+    if (studentID.length != 8) {
+      alert("学籍番号は8文字で入力してください");
+      return false;
+    }
+
+    return true; // バリデーションが成功した場合にフォームの送信を許可
+  }
+</script>
+
+</html>

@@ -1,0 +1,51 @@
+version: "3"
+services:
+  #web:
+    #image: nginx:latest
+  flask-app:
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+    container_name: flask-container
+    volumes:
+      - ./flask:/app
+    restart: always
+    ports:
+      - 8080:8080
+    tty: true
+    depends_on:
+      - db
+  
+  db:
+    image: mysql:5.7
+    platform: linux/amd64
+    env_file:
+      - .env
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: root
+    #   MYSQL_DATABASE: reservation-db
+    #   MYSQL_USER: flask
+    #   MYSQL_PASSWORD: flask
+    #TZ: 'Asia/Tokyo'
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db/sql:/docker-entrypoint-initdb.d
+      - ./db/log:/var/log/mysql
+      #- .env:/.env
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=db
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - "3000:80"
+    volumes:
+      - ./docker/phpmyadmin/sessions:/sessions
