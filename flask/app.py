@@ -1,11 +1,14 @@
 # #ここのエラーは気にしない
 from flask import Flask, render_template, request, redirect, session  # , request, redirect, url_for,flash
 from datetime import timedelta
+import datetime
+import uuid
+import random
 
 # from flask_sqlalchemy import SQLAlchemy
 from config import Config
 import pymysql
-from models import User, db
+from models import User, Supplyment,Reservation, db
 import json
 
 
@@ -153,12 +156,73 @@ def return_suuplyments():
     return json.dumps(supplyment)
 
 
-@app.get("/supplyment/<id>")
-def decide_supplyment(id):
+@app.post("/search_by_date")
+def search_by_date():
+    req = request.get_json()
+    print(req["startDate"])
+    reservations = Reservation.query.filter_by(start_date=req["startDate"]).all()
+    print(reservations)
+    reservData = []
+    for reservation in reservations:
+        data = {"start": reservation.start_time, "return":reservation.return_time}
+        reservData.append(data)
+    return reservData
+
+
+@app.post("/submit")
+def receive_submit():
+    req = request.get_json()
+    for i in req:
+        print(req[i])
+    d_today = datetime.date.today()
+    # reservation = Reservation(
+    #     req["startDate"],
+    #     req["startTime"],
+    #     req["returnDate"],
+    #     req["returnTime"],
+    # )
+    # u = uuid.uuid1()
+    reservation_id = str(random.randrange(10000, 99999))
+    print(reservation_id)
+    new_reservation = Reservation(
+        reservation_id,session.get("student_id"),
+        req["supplymentId"],req["startDate"],
+        req["startTime"],req["returnDate"],
+        req["returnTime"],d_today
+        )
+    print(new_reservation)
+    print(d_today)
+    # new_user = User(student_id, user_name, mail_address, phone_number)
+    # print(student_id, user_name, mail_address, phone_number)
+
+    db.session.add(new_reservation)
+    db.session.commit()
+
+    print(d_today)
+    return "OK"
+
+@app.get("/session")
+def get_session():
+
+    return "ok"
+
+@app.get("/complete")
+def complete_reservation():
+    return render_template("complete.html")
+
+
+@app.get("/supplyment")
+def supplyment_view():
+    render_template("detail.html")
+
+
+@app.get("/supplyment/<supplyment_id>")
+def decide_supplyment(supplyment_id):
+    # print(data)
+    supplyment_data = Supplyment.query.filter_by(id=supplyment_id).first()
+    print(supplyment_data.name)
     data = {
-        "name": "pote",
-        "age": 30,
-        "city": "Tokyo"
+        "name": supplyment_data.name,
     }
     print(data)
     return render_template("detail.html", **data)

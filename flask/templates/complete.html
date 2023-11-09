@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+  <div id="app">
+
+
+    {% raw %}
+    <h1>予約が完了しました</h1>
+    {% endraw %}
+  </div>
+</body>
+<script>
+  const {
+    createApp
+  } = Vue
+  createApp({
+    data() {
+      return {
+        session: null
+      }
+    },
+    methods: {
+      print(arg) {
+        return arg
+      }
+    },
+    created() {
+      // axios.get('http://localhost:8080/session').then(res => {
+      //   console.log(res)
+      // });
+      // console.log("ok")
+    }
+  }).mount("#app")
+</script>
+
+</html>
